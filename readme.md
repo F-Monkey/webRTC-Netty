@@ -1,19 +1,29 @@
-stun:stun1.l.google.com:19302
-stun:stun2.l.google.com:19302
-stun:stun3.l.google.com:19302
-stun:stun4.l.google.com:19302
-stun:23.21.150.121
-stun:stun01.sipphone.com
-stun:stun.ekiga.net
-stun:stun.fwdnet.net
-stun:stun.ideasip.com
-stun:stun.iptel.org
-stun:stun.rixtelecom.se
-stun:stun.schlund.de
-stun:stunserver.org
-stun:stun.softjoys.com
-stun:stun.voiparound.com
-stun:stun.voipbuster.com
-stun:stun.voipstunt.com
-stun:stun.voxgratia.org
-stun:stun.xten.com
+# Free stun server
+[free stun server](stun-server.txt)
+
+#### catalog
+
+```
+webRTC-Netty
+│   └─── readme.md
+│   └─── uild.gradle    
+│   └─── config.gradle
+│   └─── License
+│
+└─── chat-server
+│   └─── config
+│   │   └─── ... server components configurations
+│   └─── room
+│   │   └─── ... room components
+│   └─── server
+│   │   └─── ... server components
+│   └─── util
+│   │   └─── utils
+│   └─── WebChatStarter springboot starter
+│
+└─── cmd
+│    └─── ... commands 
+└─── common
+└─── netty-websocket
+└─── state-machine
+```
