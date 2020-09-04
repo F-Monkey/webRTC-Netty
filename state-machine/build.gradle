@@ -1,0 +1,12 @@
+dependencies {
+
+    implementation(project(":cmd"))
+
+    implementation(project(":netty-websocket"))
+
+    implementation rootProject.ext.dependencies["protobuf"]
+    implementation rootProject.ext.dependencies["slf4j"]
+    implementation rootProject.ext.dependencies["guava"]
+    implementation rootProject.ext.dependencies["netty"]
+    implementation rootProject.ext.dependencies["junit"]
+}

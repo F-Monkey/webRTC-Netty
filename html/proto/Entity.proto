@@ -1,0 +1,26 @@
+syntax = "proto2";
+
+option optimize_for = SPEED;
+
+message Character {
+  optional string id = 1;
+
+  optional string nickName = 2;
+
+  optional string remoteAddress = 3;
+}
+
+message RoomData {
+
+  optional int32 id = 1;
+
+  optional bool isClosed = 2;
+
+  optional bool hasAudio = 3;
+
+  optional bool hasVideo = 4;
+
+  optional string master = 5;
+
+  repeated Character characters = 6;
+}

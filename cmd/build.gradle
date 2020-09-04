@@ -1,0 +1,23 @@
+buildscript {
+    dependencies {
+        //classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.12'
+        classpath rootProject.ext.plugins["protobuf"]
+    }
+}
+
+plugins {
+    id "com.google.protobuf"
+}
+
+protobuf {
+    protoc {
+        artifact = rootProject.ext.protoc["artifact"]
+        //artifact = 'com.google.protobuf:protoc:2.5.0'
+    }
+
+    generatedFilesBaseDir = "$projectDir/src/"
+}
+
+dependencies {
+    implementation rootProject.ext.dependencies["protobuf"]
+}

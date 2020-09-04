@@ -1,0 +1,32 @@
+ext {
+
+    version = [
+            springboot    : "2.2.4.RELEASE",
+            protobuf      : "3.0.0",
+            protobufPlugin: "0.8.12",
+            protoc        : "2.5.0",
+            guava         : "29.0-jre",
+            slf4j         : "1.7.30",
+            netty         : "4.1.42.Final",
+            junit         : "4.12",
+    ]
+
+
+    protoc = [
+            "artifact": "com.google.protobuf:protoc:${version.protoc}"
+    ] as Object
+
+
+    plugins = [
+            "protobuf": "com.google.protobuf:protobuf-gradle-plugin:${version.protobufPlugin}"
+    ] as Object
+
+    dependencies = [
+            "spring-boot-starter": "org.springframework.boot:spring-boot-starter:${version.springboot}",
+            "protobuf"           : "com.google.protobuf:protobuf-java:${version.protobuf}",
+            "guava"              : "com.google.guava:guava:${version.guava}",
+            "slf4j"              : "org.slf4j:slf4j-api:${version.slf4j}",
+            "netty"              : "io.netty:netty-all:${version.netty}",
+            "junit"              : "junit:junit:${version.junit}",
+    ]
+}

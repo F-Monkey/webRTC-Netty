@@ -1,0 +1,5 @@
+dependencies {
+    implementation rootProject.ext.dependencies["slf4j"]
+    implementation rootProject.ext.dependencies["guava"]
+    implementation rootProject.ext.dependencies["junit"]
+}

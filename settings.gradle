@@ -1,0 +1,8 @@
+rootProject.name = 'webRTC-Netty'
+
+include 'cmd'
+include 'common'
+include 'netty-websocket'
+include 'state-machine'
+include 'chat-server'
+

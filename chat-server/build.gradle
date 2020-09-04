@@ -1,0 +1,16 @@
+plugins {
+    id "org.springframework.boot"
+}
+
+dependencies {
+    implementation(project(":cmd"))
+    implementation(project(":common"))
+    implementation(project(":netty-websocket"))
+    implementation(project(":state-machine"))
+    implementation rootProject.ext.dependencies["protobuf"]
+    implementation rootProject.ext.dependencies["slf4j"]
+    implementation rootProject.ext.dependencies["guava"]
+    implementation rootProject.ext.dependencies["netty"]
+    implementation rootProject.ext.dependencies["junit"]
+    implementation rootProject.ext.dependencies["spring-boot-starter"]
+}

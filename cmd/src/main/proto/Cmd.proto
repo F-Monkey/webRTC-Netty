@@ -1,0 +1,26 @@
+syntax = "proto2";
+
+package org.cn.monkey.cmd.proto;
+
+option optimize_for = SPEED;
+option java_outer_classname = "Command";
+
+message Cmd {
+  required int32 cmdType = 1;
+  optional bytes content = 2;
+}
+
+message ResultMessage {
+  required int32 code = 1;
+  optional string msg = 2;
+}
+
+message Package {
+  optional ResultMessage resultMsg = 1;
+  optional int32 cmdType = 2;
+  optional bytes content = 3;
+}
+
+message PackageGroup {
+  repeated Package packages = 1;
+}

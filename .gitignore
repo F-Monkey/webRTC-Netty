@@ -1,0 +1,10 @@
+### STS ###
+.git
+.gradle/
+.idea/
+gradle/
+build/
+gradlew
+gradle.bat
+*/build/
+*.iml

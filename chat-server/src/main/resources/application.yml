@@ -1,0 +1,7 @@
+spring:
+  webchat:
+    roomCapacity: 10
+    updateWaitTime: 50
+    stateGroupCapacity: 10
+  netty:
+    port: 8080

@@ -1,0 +1,68 @@
+syntax = "proto2";
+
+import "Entity.proto";
+
+option optimize_for = SPEED;
+
+message Login {
+  required string userId = 1;
+  required string password = 2;
+}
+
+message LoginResult {
+  optional RoomData roomData = 1;
+}
+
+message Logout {
+
+}
+
+message LogoutResult {
+  required string logoutUserId = 1;
+}
+
+message CreateRoom {
+  required string userId = 1;
+  optional bool hasAudio = 2;
+  optional bool hasVideo = 3;
+}
+
+message CreateRoomResult {
+  required int64 roomId = 1;
+  optional RoomData roomData = 2;
+}
+
+message CloseRoom {
+
+}
+
+message CloseRoomResult {
+}
+
+message KickOffCharacter {
+  required string characterId = 1;
+}
+
+message KickOffCharacterResult {
+  optional string kickOffCharacterId = 1;
+  optional RoomData roomData = 2;
+}
+
+message EnterRoom {
+  required string userId = 1;
+  required int64 roomId = 2;
+}
+
+message EnterRoomResult {
+  optional int64 roomId = 1;
+  optional RoomData roomData = 2;
+}
+
+message StartChatting {
+
+}
+
+message StartChattingResult {
+  optional RoomData roomData = 1;
+}
+
