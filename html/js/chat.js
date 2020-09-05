@@ -1,206 +1,92 @@
-let localVideo;
+var txtSelfId = document.querySelector("input#txtSelfId");
+var txtTargetId = document.querySelector("input#txtTargetId");
+var txtMsg = document.querySelector("input#txtMsg");
+var tdBox = document.querySelector("td#tdBox");
+var btnRegister = document.querySelector("button#btnRegister");
+var btnSend = document.querySelector("button#btnSend");
 
-let free_stun_server = [
-    "stun:stun1.l.google.com:19302",
-    "stun:stun2.l.google.com:19302",
-    "stun:stun3.l.google.com:19302"
-]
+let peer = null;
+let conn = null;
 
-let offerOptions = {
-  offerToReceiveAudio: 1,
-  offerToReceiveVideo: 1
-};
-
-var body = document.getElementById("body");
-var chatUl = document.createElement("ul");
-body.appendChild(chatUl);
-
-let myPeerConnection = createPeerConnection();
-
-function UserMap(){
-    this.url = {}
-}
-
-UserMap.prototype.put = function(userId, val){
-    this.url[userId] = val;
-    return;
-}
-
-UserMap.prototype.remove = function(userId){
-    var element = this.url[userId];
-    if(typeof element == "document"){
-        element.remove(element.selectedIndex);
+//peer连接时，id不允许有中文，所以转换成hashcode数字
+hashCode = function (str) {
+    var hash = 0;
+    if (str.length == 0) return hash;
+    for (i = 0; i < str.length; i++) {
+        char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash;
     }
-    delete this.url[userId];
+    return hash;
 }
 
-let remoteConnectionMap = new UserMap();
-
-loadVideoComponent();
-
-function loadVideoComponent(){
-    var localVideoContent = "<video autoplay width=\"100%\" height=\"100%\"></video>";
-    //localVideo = eval(videoContent);
-    //let ul = document.createElement("ul");
-    let li = document.createElement("li");
-    li.innerHTML = localVideoContent;
-    //li.appendChild(localVideo);
-    localVideo = li.childNodes[0];
-    chatUl.appendChild(li);
-    //body.appendChild(ul);
+sendMessage = function (message) {
+    conn.send(JSON.stringify(message));
+    console.log(message);
+    tdBox.innerHTML = tdBox.innerHTML += "<div class='align_left'>" + message.from + " : " + message.body + "</div>";
 }
 
-function createRemoteConnection(roomData){
-    if(roomData.characters){
-        for(var i in roomData.characters){
-            var character = roomData.characters[i];
-            var remotePc = createPeerConnection(character.remoteAddress);
-            addVideoElement(pc,chatUl);
-            remoteConnectionMap.put(character.id, addVideoElement(pc,chatUl));
+window.onload = function () {
+
+    //peerserver的连接选项(debug:3表示打开调试，将在浏览器的console输出详细日志)
+    //let connOption = { host: 'localhost', port: 9000, path: '/', debug: 3 };
+    let connOption = {};
+    //register处理
+    btnRegister.onclick = function () {
+        if (!peer) {
+            if (txtSelfId.value.length == 0) {
+                alert("please input your name");
+                txtSelfId.focus();
+                return;
+            }
+            //创建peer实例 
+            peer = new Peer(hashCode(txtSelfId.value), connOption);
+
+            //register成功的回调
+            peer.on('open', function (id) {
+                tdBox.innerHTML = tdBox.innerHTML += "<div class='align_right'>system : register success " + id + "</div>";
+            });
+
+            peer.on('connection', (conn) => {
+                //收到对方消息的回调
+                conn.on('data', (data) => {
+                    var msg = JSON.parse(data);
+                    tdBox.innerHTML = tdBox.innerHTML += "<div class='align_right'>" + msg.from + " : " + msg.body + "</div>";
+                    if (txtTargetId.value.length == 0) {
+                        txtTargetId.value = msg.from;
+                    }
+                });
+            });
         }
     }
-}
 
-function createRemoteConnection_0(){
-    var remotePc = createPeerConnection();
-    remotePc.createOffer(offerOptions).then(desc => onCreateOfferSuccess(remotePc, desc))
-                                        .catch(err =>{console.error(err)});
-    var video = addVideoElement(remotePc,chatUl);
-    remoteConnectionMap.put("111", video);
-}
+    //发送消息处理
+    btnSend.onclick = function () {
+        //消息体
+        var message = { "from": txtSelfId.value, "to": txtTargetId.value, "body": txtMsg.value };
+        if (!conn) {
+            if (txtTargetId.value.length == 0) {
+                alert("please input target name");
+                txtTargetId.focus();
+                return;
+            }
+            if (txtMsg.value.length == 0) {
+                alert("please input message");
+                txtMsg.focus();
+                return;
+            }
 
-function createScreenShare(){
-    navigator.mediaDevices.getDisplayMedia(constraints).then(stream =>{
-        localVideo.srcObject = stream;
-        shareStream(stream);
-    }).catch(err =>{
-        console.error(err);
-    });
-}
-
-function createRemoteChat(){
-    navigator.mediaDevices.getUserMedia(constraints).then(stream =>{
-        localVideo.srcObject = stream;
-        shareStream(stream);
-    }).catch(err => {
-        console.error(err);
-    });
-}
-
-/**
-    聊天
-*/
-var constraints = {video: true, audio:{ echoCancellation : true, noiseSuppression : true }};
-
-
-
-function shareStream(stream){
-    for (const track of stream.getTracks()) {
-        myPeerConnection.addTrack(track, stream);
-    }
-}
-
-/**
- * create a video element if the candidate add success, and add the element to the index of the parentUl's li
- */
-function addVideoElement(pc, parentUl, index){
-
-    var localVideoContent = "<video autoplay width=\"100%\" height=\"100%\"></video>";
-    var li = document.createElement("li");
-    li.innerHTML = localVideoContent;
-
-    var video = li.childNodes[0];
-
-    pc.ontrack = function(event){
-        if (video.srcObject !== event.streams[0]) {
-            video.srcObject = event.streams[0];
+            //创建到对方的连接
+            conn = peer.connect(hashCode(txtTargetId.value));
+            conn.on('open', () => {
+                //首次发送消息
+                sendMessage(message);
+            });
         }
-        console.log('send local stream', event);
+
+        //发送消息
+        if (conn.open) {
+            sendMessage(message);
+        }
     }
-
-    var childNodes = parentUl.childNodes;
-    if(!index || childNodes.length < index){
-        console.log("index is more than childNodes length, add element to the last");
-        let li = document.createElement("li");
-        li.appendChild(video);
-        parentUl.appendChild(li);
-        return video;
-    }
-
-
-    childNodes[index].innerHTML = "";
-    childNodes[index].appendChild(video);
-}
-
-/**
- *  create peerConnection
- *  谁请求连接我，我才可以把candidate添加进去，谁才可以看到我的视频资源。
- *  所以我的peerConnection 就只有一个，
- *  但是如果我想看到其他人的视频资源的话，需要给别人发送connect
- */
-function createPeerConnection(){
-   var pcConfig = {
-                  	'iceServers':[{
-                  		'urls' : free_stun_server
-                  	}]
-                  };
-
-    var pc = new RTCPeerConnection(pcConfig);
-    pc.onIceCandidate = function(event){
-        var candidate = event.candidate;
-        console.info("candidate :", candidate);
-
-        myPeerConnection.addIceCandidate(event.candidate)
-                        .then(() => onAddIceCandidateSuccess(candidate), err =>onAddIceCandidateError(candidate,error));
-        myPeerConnection.createAnswer().then(desc =>createAnswerSuc(myPeerConnection,desc));
-    }
-    return pc;
-}
-
-function createAnswerSuc(pc,desc){
-	pc.setLocalDescription(desc);
-}
-
-function onCreateOfferSuccess(pc,desc){
-  console.log(`Offer from pc1${desc.sdp}`);
-  console.log('pc1 setLocalDescription start');
-  pc.setLocalDescription(desc, () => onSetLocalSuccess(pc), onSetSessionDescriptionError);
-}
-
-function onSetLocalSuccess(pc) {
-  console.log("setLocalDescription complete");
-}
-
-function onSetRemoteSuccess(pc) {
-  console.log("setRemoteDescription complete");
-}
-
-function onSetSessionDescriptionError(error) {
-  console.log("Failed to set session description");
-}
-
-
-function onCreateSessionDescriptionError(error) {
-  console.log(`Failed to create session description: ${error.toString()}`);
-}
-
-
-function addCandidate(candidate){
-    myPeerConnection.addIceCandidate(event.candidate)
-                .then(() => onAddIceCandidateSuccess(candidate), err =>onAddIceCandidateError(candidate,error));
-    myPeerConnection.createAnswer().then(desc =>createAnswerSuc(myPeerConnection,desc));
-}
-
-function onIceCandidate(event) {
-    var candidate = event.candidate;
-    console.info("candidate :", candidate);
-    addCandidate(candidate);
-}
-
-function onAddIceCandidateSuccess(candidate) {
-  console.log(candidate +` addIceCandidate success`);
-}
-
-function onAddIceCandidateError(candidate, error) {
-  console.log(candidate+` failed to add ICE Candidate: ${error.toString()}`);
 }
