@@ -5,8 +5,9 @@
 
 ```
 webRTC-Netty
+
 │   └─── readme.md
-│   └─── uild.gradle    
+│   └─── build.gradle    
 │   └─── config.gradle
 │   └─── License
 │
