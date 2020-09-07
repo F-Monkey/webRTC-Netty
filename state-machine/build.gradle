@@ -1,7 +1,7 @@
 dependencies {
 
     implementation(project(":cmd"))
-
+    implementation(project(":common"))
     implementation(project(":netty-websocket"))
 
     implementation rootProject.ext.dependencies["protobuf"]

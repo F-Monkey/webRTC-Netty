@@ -101,7 +101,7 @@ window.onload = function () {
 
     //连接到peerjs服务器的选项
     //let connOption = { host: 'localhost', port: 9000, path: '/', debug: 3 };
-    let connOption = {};
+    let connOption =  {video: true, audio:{ echoCancellation : true, noiseSuppression : true }};;
 //register处理
 btnRegister.onclick = function () {
     if (!peer) {

@@ -11,11 +11,9 @@ ext {
             junit         : "4.12",
     ]
 
-
     protoc = [
             "artifact": "com.google.protobuf:protoc:${version.protoc}"
     ] as Object
-
 
     plugins = [
             "protobuf": "com.google.protobuf:protobuf-gradle-plugin:${version.protobufPlugin}"
