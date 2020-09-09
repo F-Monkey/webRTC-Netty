@@ -7,7 +7,7 @@ function createScreenShare(){
     });
 }
 
-function createRemoteChat(){
+function createCameraChat(){
     navigator.mediaDevices.getUserMedia(constraints).then(stream =>{
         localVideo.srcObject = stream;
         shareStream(stream);
